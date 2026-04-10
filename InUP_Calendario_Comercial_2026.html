@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InUP Contabilidade — Calendário Comercial 2º Ciclo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #52ec6f;
+    --green-dim: #2db84a;
+    --black: #161616;
+    --black2: #1f1f1f;
+    --black3: #2a2a2a;
+    --black4: #363636;
+    --white: #ffffff;
+    --gray: #888888;
+    --gray2: #555555;
+    --tag-evento: #52ec6f;
+    --tag-marco: #f5c518;
+    --tag-bpo: #5b9cf6;
+    --tag-cofins: #f97316;
+    --tag-followup: #a78bfa;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: var(--black);
+    border-bottom: 1px solid var(--black3);
+    padding: 28px 40px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .logo-block { display: flex; align-items: center; gap: 14px; }
+  .logo-mark {
+    width: 38px; height: 38px;
+    background: var(--green);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 900; color: var(--black);
+    letter-spacing: -1px;
+  }
+  .logo-text { line-height: 1.2; }
+  .logo-text strong { font-size: 15px; font-weight: 800; color: var(--white); display: block; }
+  .logo-text span { font-size: 11px; color: var(--gray); font-weight: 400; letter-spacing: .04em; }
+
+  .metas-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .meta-pill {
+    background: var(--black3);
+    border: 1px solid var(--black4);
+    border-radius: 20px;
+    padding: 5px 13px;
+    font-size: 11px;
+    color: var(--gray);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .meta-pill strong { color: var(--white); font-weight: 600; font-size: 12px; }
+  .meta-pill.highlight { border-color: var(--green); }
+  .meta-pill.highlight strong { color: var(--green); }
+
+  /* ─── TABS ─── */
+  .tabs-wrap {
+    max-width: 1100px;
+    margin: 28px auto 0;
+    padding: 0 40px;
+  }
+  .tabs {
+    display: flex; gap: 4px;
+    background: var(--black2);
+    border: 1px solid var(--black3);
+    border-radius: 12px;
+    padding: 5px;
+    width: fit-content;
+  }
+  .tab {
+    padding: 8px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--gray);
+    transition: all .18s;
+    font-family: 'Inter', sans-serif;
+  }
+  .tab.active {
+    background: var(--green);
+    color: var(--black);
+  }
+  .tab:hover:not(.active) { color: var(--white); background: var(--black3); }
+
+  /* ─── BODY ─── */
+  .body-wrap {
+    max-width: 1100px;
+    margin: 28px auto 0;
+    padding: 0 40px;
+  }
+  .month-panel { display: none; }
+  .month-panel.active { display: block; }
+
+  .month-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* ─── WEEK CARD ─── */
+  .week-card {
+    background: var(--black2);
+    border: 1px solid var(--black3);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .week-card:hover { border-color: var(--black4); }
+  .week-card.has-evento { border-left: 3px solid var(--green); }
+  .week-card.has-marco { border-left: 3px solid var(--tag-marco); }
+
+  .week-head {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    gap: 14px;
+    user-select: none;
+  }
+  .week-num {
+    width: 32px; height: 32px; min-width: 32px;
+    border-radius: 8px;
+    background: var(--black3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    color: var(--gray);
+  }
+  .week-card.has-evento .week-num { background: var(--green); color: var(--black); }
+  .week-card.has-marco .week-num { background: var(--tag-marco); color: var(--black); }
+
+  .week-info { flex: 1; min-width: 0; }
+  .week-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .week-dates { font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+  .week-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 99px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .badge.evento { background: rgba(82,236,111,.15); color: var(--green); border: 1px solid rgba(82,236,111,.3); }
+  .badge.marco { background: rgba(245,197,24,.12); color: var(--tag-marco); border: 1px solid rgba(245,197,24,.25); }
+  .badge.bpo { background: rgba(91,156,246,.12); color: var(--tag-bpo); border: 1px solid rgba(91,156,246,.25); }
+  .badge.revisao { background: rgba(249,115,22,.12); color: var(--tag-cofins); border: 1px solid rgba(249,115,22,.25); }
+
+  .week-chevron {
+    width: 20px; height: 20px; min-width: 20px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gray2);
+    font-size: 11px;
+    transition: transform .2s;
+  }
+  .week-card.open .week-chevron { transform: rotate(180deg); }
+
+  /* progress */
+  .week-progress {
+    height: 2px;
+    background: var(--black3);
+    margin: 0 20px 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .week-progress-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    width: 0%;
+    transition: width .3s;
+  }
+
+  /* ─── TASKS ─── */
+  .week-body { display: none; padding: 4px 20px 18px; }
+  .week-card.open .week-body { display: block; }
+
+  .tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .task-item {
+    background: var(--black3);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    transition: background .15s;
+    cursor: pointer;
+  }
+  .task-item:hover { background: var(--black4); }
+  .task-item.done { opacity: .45; }
+  .task-item.done .task-title { text-decoration: line-through; }
+
+  .task-cb {
+    width: 18px; height: 18px; min-width: 18px;
+    border: 1.5px solid var(--gray2);
+    border-radius: 5px;
+    margin-top: 1px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    transition: all .15s;
+    flex-shrink: 0;
+  }
+  .task-cb:checked {
+    background: var(--green);
+    border-color: var(--green);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23161616' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-size: 11px;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .task-content { flex: 1; min-width: 0; }
+  .task-title { font-size: 13px; font-weight: 600; color: var(--white); line-height: 1.4; }
+  .task-desc { font-size: 11px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
+  .task-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .task-tag {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: 2px 7px;
+    border-radius: 99px;
+  }
+  .task-tag.evento { background: rgba(82,236,111,.15); color: var(--green); }
+  .task-tag.bpo { background: rgba(91,156,246,.12); color: var(--tag-bpo); }
+  .task-tag.cofins { background: rgba(249,115,22,.12); color: var(--tag-cofins); }
+  .task-tag.indicacao { background: rgba(167,139,250,.12); color: var(--tag-followup); }
+  .task-tag.gestao { background: rgba(245,197,24,.12); color: var(--tag-marco); }
+  .task-tag.prospeccao { background: rgba(255,255,255,.08); color: var(--gray); }
+
+  /* ─── PROGRESS BAR BOTTOM ─── */
+  .progress-label {
+    font-size: 10px;
+    color: var(--gray2);
+    margin: 8px 0 2px;
+    text-align: right;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .footer-text { font-size: 11px; color: var(--gray2); }
+  .footer-text strong { color: var(--green); }
+
+  .overall-progress {
+    background: var(--black2);
+    border: 1px solid var(--black3);
+    border-radius: 10px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .overall-bar {
+    width: 140px; height: 4px;
+    background: var(--black4);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .overall-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width .3s; }
+  .overall-pct { font-size: 12px; font-weight: 700; color: var(--green); min-width: 36px; }
+  .overall-label { font-size: 11px; color: var(--gray); }
+
+  @media (max-width: 640px) {
+    .header, .tabs-wrap, .body-wrap, .footer { padding-left: 16px; padding-right: 16px; }
+    .tasks-grid { grid-template-columns: 1fr; }
+    .metas-row { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-mark">in</div>
+      <div class="logo-text">
+        <strong>inupcontabilidade.</strong>
+        <span>Calendário Comercial · 2º Ciclo 2026</span>
+      </div>
+    </div>
+    <div class="metas-row">
+      <div class="meta-pill highlight"><span>MRR</span><strong>R$ 33.000</strong></div>
+      <div class="meta-pill"><span>Acessório</span><strong>R$ 80.000</strong></div>
+      <div class="meta-pill"><span>Ticket médio</span><strong>R$ 450</strong></div>
+      <div class="meta-pill"><span>MRR BPO</span><strong>R$ 10.000</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="showMonth('abril', this)">Abril</button>
+    <button class="tab" onclick="showMonth('maio', this)">Maio</button>
+    <button class="tab" onclick="showMonth('junho', this)">Junho</button>
+  </div>
+</div>
+
+<div class="body-wrap">
+
+  <!-- ─── ABRIL ─── -->
+  <div class="month-panel active" id="abril">
+    <p class="month-title" style="margin-top:0">Abril — 01 abr a 30 abr</p>
+
+    <div class="week-card has-marco" id="w0">
+      <div class="week-head" onclick="toggle('w0')">
+        <div class="week-num">09</div>
+        <div class="week-info">
+          <div class="week-name">Evento Moinho — pré-ciclo</div>
+          <div class="week-dates">09 de abril · Marco de largada</div>
+        </div>
+        <div class="week-badges"><span class="badge marco">Marco</span></div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w0"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w0">0 / 2 concluídas</div>
+        <div class="tasks-grid" id="tasks-w0">
+        </div>
+      </div>
+    </div>
+
+    <div class="week-card" id="w1">
+      <div class="week-head" onclick="toggle('w1')">
+        <div class="week-num">S1</div>
+        <div class="week-info">
+          <div class="week-name">Ativação do ciclo</div>
+          <div class="week-dates">13 – 19 de abril</div>
+        </div>
+        <div class="week-badges"><span class="badge bpo">BPO</span></div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w1"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w1">0 / 8 concluídas</div>
+        <div class="tasks-grid" id="tasks-w1"></div>
+      </div>
+    </div>
+
+    <div class="week-card" id="w2">
+      <div class="week-head" onclick="toggle('w2')">
+        <div class="week-num">S2</div>
+        <div class="week-info">
+          <div class="week-name">Prospecção e preparação Evento 1</div>
+          <div class="week-dates">20 – 26 de abril</div>
+        </div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w2"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w2">0 / 5 concluídas</div>
+        <div class="tasks-grid" id="tasks-w2"></div>
+      </div>
+    </div>
+
+    <div class="week-card has-evento" id="w3">
+      <div class="week-head" onclick="toggle('w3')">
+        <div class="week-num">S3</div>
+        <div class="week-info">
+          <div class="week-name">Evento 1 — Agência + Tribuna</div>
+          <div class="week-dates">27 abr – 03 mai · Highticket</div>
+        </div>
+        <div class="week-badges"><span class="badge evento">Evento</span></div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w3"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w3">0 / 4 concluídas</div>
+        <div class="tasks-grid" id="tasks-w3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MAIO ─── -->
+  <div class="month-panel" id="maio">
+    <p class="month-title" style="margin-top:0">Maio — 01 mai a 31 mai</p>
+
+    <div class="week-card" id="w4">
+      <div class="week-head" onclick="toggle('w4')">
+        <div class="week-num">S4</div>
+        <div class="week-info">
+          <div class="week-name">Follow-up e expansão</div>
+          <div class="week-dates">04 – 10 de maio</div>
+        </div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w4"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w4">0 / 5 concluídas</div>
+        <div class="tasks-grid" id="tasks-w4"></div>
+      </div>
+    </div>
+
+    <div class="week-card" id="w5">
+      <div class="week-head" onclick="toggle('w5')">
+        <div class="week-num">S5</div>
+        <div class="week-info">
+          <div class="week-name">Sprint BPO e preparação Evento 2</div>
+          <div class="week-dates">11 – 17 de maio</div>
+        </div>
+        <div class="week-badges"><span class="badge bpo">BPO</span></div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w5"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w5">0 / 4 concluídas</div>
+        <div class="tasks-grid" id="tasks-w5"></div>
+      </div>
+    </div>
+
+    <div class="week-card has-evento" id="w6">
+      <div class="week-head" onclick="toggle('w6')">
+        <div class="week-num">S6</div>
+        <div class="week-info">
+          <div class="week-name">Evento 2 — Arquiteto + Núcleo Urbama</div>
+          <div class="week-dates">18 – 24 de maio · Highticket</div>
+        </div>
+        <div class="week-badges"><span class="badge evento">Evento</span></div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w6"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w6">0 / 3 concluídas</div>
+        <div class="tasks-grid" id="tasks-w6"></div>
+      </div>
+    </div>
+
+    <div class="week-card has-marco" id="w7">
+      <div class="week-head" onclick="toggle('w7')">
+        <div class="week-num">S7</div>
+        <div class="week-info">
+          <div class="week-name">Revisão mid-cycle</div>
+          <div class="week-dates">25 – 31 de maio · Checkpoint de metas</div>
+        </div>
+        <div class="week-badges"><span class="badge marco">Revisão</span></div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w7"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w7">0 / 4 concluídas</div>
+        <div class="tasks-grid" id="tasks-w7"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── JUNHO ─── -->
+  <div class="month-panel" id="junho">
+    <p class="month-title" style="margin-top:0">Junho — 01 jun a 30 jun</p>
+
+    <div class="week-card" id="w8">
+      <div class="week-head" onclick="toggle('w8')">
+        <div class="week-num">S8</div>
+        <div class="week-info">
+          <div class="week-name">Preparação Evento 3</div>
+          <div class="week-dates">01 – 07 de junho</div>
+        </div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w8"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w8">0 / 4 concluídas</div>
+        <div class="tasks-grid" id="tasks-w8"></div>
+      </div>
+    </div>
+
+    <div class="week-card has-evento" id="w9">
+      <div class="week-head" onclick="toggle('w9')">
+        <div class="week-num">S9</div>
+        <div class="week-info">
+          <div class="week-name">Evento 3 — Ancora + Mercado Imobiliário</div>
+          <div class="week-dates">08 – 14 de junho · Highticket</div>
+        </div>
+        <div class="week-badges"><span class="badge evento">Evento</span></div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w9"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w9">0 / 3 concluídas</div>
+        <div class="tasks-grid" id="tasks-w9"></div>
+      </div>
+    </div>
+
+    <div class="week-card" id="w10">
+      <div class="week-head" onclick="toggle('w10')">
+        <div class="week-num">S10</div>
+        <div class="week-info">
+          <div class="week-name">Sprint final de fechamentos</div>
+          <div class="week-dates">15 – 21 de junho</div>
+        </div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w10"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w10">0 / 5 concluídas</div>
+        <div class="tasks-grid" id="tasks-w10"></div>
+      </div>
+    </div>
+
+    <div class="week-card has-marco" id="w11">
+      <div class="week-head" onclick="toggle('w11')">
+        <div class="week-num">S11</div>
+        <div class="week-info">
+          <div class="week-name">Fechamento do ciclo</div>
+          <div class="week-dates">22 – 30 de junho · Encerramento oficial</div>
+        </div>
+        <div class="week-badges"><span class="badge marco">Encerramento</span></div>
+        <div class="week-chevron">▼</div>
+      </div>
+      <div class="week-progress"><div class="week-progress-fill" id="prog-w11"></div></div>
+      <div class="week-body">
+        <div class="progress-label" id="plabel-w11">0 / 4 concluídas</div>
+        <div class="tasks-grid" id="tasks-w11"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-text">InUP Contabilidade · <strong>2º Ciclo 2026</strong> · 01 abr – 30 jun</div>
+  <div class="overall-progress">
+    <div class="overall-label">Progresso geral</div>
+    <div class="overall-bar"><div class="overall-fill" id="overall-fill"></div></div>
+    <div class="overall-pct" id="overall-pct">0%</div>
+  </div>
+</div>
+
+<script>
+const tasks = {
+  'w0': [
+    { title: 'Evento Moinho — captura de leads', desc: 'Participar do evento e registrar todos os contatos captados no pipeline.', tags: ['evento'] },
+    { title: 'Definir critério de qualificação de leads', desc: 'Decidir o filtro mínimo: perfil, porte, interesse — antes de distribuir para o time.', tags: ['gestao'] }
+  ],
+  'w1': [
+    { title: 'Qualificar e distribuir leads do Moinho', desc: 'Revisar cada lead captado, classificar por temperatura e dividir entre os vendedores.', tags: ['prospeccao'] },
+    { title: 'Segmentar base de clientes por indicação', desc: 'Separar quem indica muito, quem indica pouco e quem nunca indicou — base para o programa de referência.', tags: ['indicacao'] },
+    { title: 'Montar pitch personalizado por grupo', desc: 'Criar um script diferente para cada perfil de indicador. Quem indica muito: nada. Quem indica pouco: ligar e apresentar o programa.', tags: ['indicacao'] },
+    { title: 'Ligar para clientes que indicam pouco', desc: 'Abordagem consultiva: entender por que não indicam e apresentar como funciona o programa de indicação.', tags: ['indicacao'] },
+    { title: 'Acionar MEJ para pipeline COFINS', desc: 'Contato com Federação, Núcleo e EJ de Direito para gerar indicações de clientes com necessidade de COFINS.', tags: ['cofins'] },
+    { title: 'Analisar base interna para BPO', desc: 'Mapear clientes atuais com perfil para BPO — identificar oportunidades de upsell antes de prospectar fora.', tags: ['bpo'] },
+    { title: 'Estruturar LinkedIn — Hugo', desc: 'Ajustar headline, resumo e publicações para atrair escritórios de advocacia e empresas-alvo BPO.', tags: ['bpo'] },
+    { title: 'Estruturar LinkedIn — Tulio', desc: 'Mesma ação do Hugo: perfil pronto para prospecção ativa via LinkedIn no segmento BPO.', tags: ['bpo'] }
+  ],
+  'w2': [
+    { title: 'Follow-up leads Moinho — proposta', desc: 'Avançar com os leads qualificados da semana anterior: apresentar proposta ou agendar reunião.', tags: ['prospeccao'] },
+    { title: 'Mapear clínicas não atendidas', desc: 'Levantar clínicas médicas/odontológicas em regiões onde não temos presença — foco em carnê leão + CNPJ.', tags: ['prospeccao'] },
+    { title: 'Primeiro contato BPO — advocacia via LinkedIn', desc: 'Iniciar abordagem nos escritórios mapeados. Mensagem personalizada, sem pitch imediato.', tags: ['bpo'] },
+    { title: 'Oferta de implantação contábil para leads quentes', desc: 'Para leads já engajados do Moinho: oferecer implantação como porta de entrada para a contabilidade.', tags: ['prospeccao'] },
+    { title: 'Preparação logística Evento 1', desc: 'Confirmar local, lista de convidados, material de apoio e fluxo do evento Agência + Tribuna.', tags: ['evento'] }
+  ],
+  'w3': [
+    { title: '🟢 EVENTO 1 — Agência + Tribuna', desc: 'Evento highticket com foco em agências e profissionais do segmento de comunicação. Meta: gerar leads qualificados para consultoria.', tags: ['evento'] },
+    { title: 'Follow-up imediato pós-Evento 1', desc: 'Entrar em contato ainda na semana: calor do evento aumenta conversão. Registrar no CRM.', tags: ['prospeccao'] },
+    { title: 'Vender consultoria: planejamento tributário', desc: 'Abordagem específica para leads do evento: apresentar o impacto do planejamento tributário no caixa deles.', tags: ['prospeccao'] },
+    { title: 'Avançar propostas BPO advocacia', desc: 'Dar continuidade nos contatos de advocacia que já responderam — evoluir para reunião ou proposta.', tags: ['bpo'] }
+  ],
+  'w4': [
+    { title: 'Follow-up Evento 1 — fechar propostas', desc: 'Semana de conversão: pressionar fechamento nos leads do Evento 1 que ficaram em aberto.', tags: ['prospeccao'] },
+    { title: 'Prospecção clínicas — 1ª rodada', desc: 'Ligar e abordar as clínicas mapeadas. Foco: carnê leão para pessoa física + abertura de CNPJ.', tags: ['prospeccao'] },
+    { title: 'Prospecção dentistas — consultoria específica', desc: 'Abordagem direta para dentistas: consultoria de gestão tributária para o segmento odontológico.', tags: ['prospeccao'] },
+    { title: 'Primeiro contato com construtora (Diamond)', desc: 'Abertura com construtora de Juiz de Fora — entender necessidade e posicionar a InUP como parceira.', tags: ['prospeccao'] },
+    { title: 'Follow-up COFINS via MEJ — fase de fechamento', desc: 'Retomar contatos MEJ: leads que avançaram precisam de proposta ou reunião de fechamento.', tags: ['cofins'] }
+  ],
+  'w5': [
+    { title: 'Preparação Evento 2 — Arquiteto + Núcleo Urbama', desc: 'Confirmar parceria com Núcleo Urbama, lista de arquitetos convidados e dinâmica do evento.', tags: ['evento'] },
+    { title: 'Sprint BPO: avançar propostas advocacia', desc: 'Revisão do pipeline BPO advocacia: quem ainda não respondeu recebe segundo contato. Quem respondeu avança para proposta.', tags: ['bpo'] },
+    { title: 'Fechar consultorias tributárias do Evento 1', desc: 'Prazo limite para fechar os leads de consultoria gerados no Evento 1 antes de perder o momentum.', tags: ['prospeccao'] },
+    { title: 'Prospecção clínicas — 2ª rodada', desc: 'Retornar para clínicas que não responderam na semana 4 e abordar novos contatos da lista.', tags: ['prospeccao'] }
+  ],
+  'w6': [
+    { title: '🟢 EVENTO 2 — Arquiteto + Núcleo Urbama', desc: 'Evento highticket no segmento de arquitetura e urbanismo. Meta: leads para consultoria e contabilidade.', tags: ['evento'] },
+    { title: 'Follow-up imediato pós-Evento 2', desc: 'Contato no mesmo dia ou dia seguinte: agradecer presença e propor próximos passos.', tags: ['prospeccao'] },
+    { title: 'Evento reforma tributária com setor', desc: 'Evento de conteúdo para setor a definir — posicionar a InUP como referência em reforma tributária.', tags: ['evento'] }
+  ],
+  'w7': [
+    { title: 'Follow-up Evento 2 — fechar propostas', desc: 'Conversão dos leads do Evento 2: reuniões de diagnóstico e fechamento de proposta.', tags: ['prospeccao'] },
+    { title: '📊 Revisão mid-cycle: resultado vs. metas', desc: 'Reunião interna: onde estamos em MRR, Acessório e BPO? O que precisamos ajustar nas últimas 4 semanas?', tags: ['gestao'] },
+    { title: 'Ajuste de prioridades com base nos números', desc: 'Redirecionar energia do time para as frentes com maior gap em relação às metas.', tags: ['gestao'] },
+    { title: 'Fechar dentistas e clínicas com propostas abertas', desc: 'Deadline: não deixar propostas antigas esfriarem. Ligar e definir um desfecho.', tags: ['prospeccao'] }
+  ],
+  'w8': [
+    { title: 'Preparação Evento 3 — Ancora + Imobiliário', desc: 'Fechar parceria com Ancora, mapear convidados do mercado imobiliário e montar o formato do evento.', tags: ['evento'] },
+    { title: 'Sprint BPO: fechar 1 contrato advocacia', desc: 'Meta específica da semana: converter pelo menos um escritório de advocacia em cliente BPO.', tags: ['bpo'] },
+    { title: 'Prospecção construtoras — aprofundar contatos', desc: 'Dar sequência à construtora Diamond e ampliar o mapeamento para outros players de JF.', tags: ['prospeccao'] },
+    { title: 'Follow-up geral de leads em aberto', desc: 'Varrer o CRM: qualquer lead sem movimentação há mais de 10 dias recebe contato.', tags: ['gestao'] }
+  ],
+  'w9': [
+    { title: '🟢 EVENTO 3 — Ancora + Mercado Imobiliário', desc: 'Evento highticket no segmento imobiliário. Foco em corretores, construtoras e imobiliárias.', tags: ['evento'] },
+    { title: 'Follow-up imediato pós-Evento 3', desc: 'Contato no calor do evento: WhatsApp + e-mail com proposta de próximo passo.', tags: ['prospeccao'] },
+    { title: 'Sprint final COFINS — fechar MEJ', desc: 'Último prazo para converter as indicações MEJ que ainda estão em negociação.', tags: ['cofins'] }
+  ],
+  'w10': [
+    { title: 'Follow-up Evento 3 — fechar propostas', desc: 'Semana de conversão final do Evento 3: reuniões, propostas e fechamento.', tags: ['prospeccao'] },
+    { title: 'Sprint final: consultoria planejamento tributário', desc: 'Última janela para fechar contratos de consultoria tributária abertos ao longo do ciclo.', tags: ['prospeccao'] },
+    { title: 'Sprint final: consultoria reforma tributária', desc: 'Fechar os contratos de reforma tributária que ainda estão em negociação.', tags: ['prospeccao'] },
+    { title: 'Fechar clínicas remanescentes', desc: 'Última rodada com clínicas: dar um desfecho em todos os contatos iniciados no ciclo.', tags: ['prospeccao'] },
+    { title: 'Fechar dentistas remanescentes', desc: 'Fechar ou arquivar definitivamente os leads de dentistas — limpar o pipeline para o próximo ciclo.', tags: ['prospeccao'] }
+  ],
+  'w11': [
+    { title: 'Sprint de fechamento geral', desc: 'Todos os vendedores focados em fechar: nenhum lead quente fica sem resposta na última semana.', tags: ['gestao'] },
+    { title: 'Foco em bater MRR e MRR BPO', desc: 'Prioridade máxima da semana: esses são geralmente os indicadores com maior gap no final do ciclo.', tags: ['gestao'] },
+    { title: 'Encerramento do ciclo: resultados vs. metas', desc: 'Reunião final de ciclo com o time: apresentar os números e celebrar o que foi conquistado.', tags: ['gestao'] },
+    { title: 'Documentar aprendizados para o 3º ciclo', desc: 'O que funcionou? O que não funcionou? Registrar antes que o conhecimento se perca.', tags: ['gestao'] }
+  ]
+};
+
+const state = {};
+let totalAll = 0;
+let doneAll = 0;
+
+Object.keys(tasks).forEach(wid => {
+  state[wid] = tasks[wid].map(() => false);
+  totalAll += tasks[wid].length;
+  const grid = document.getElementById('tasks-' + wid);
+  if (!grid) return;
+  tasks[wid].forEach((t, i) => {
+    const div = document.createElement('div');
+    div.className = 'task-item';
+    div.id = 'item-' + wid + '-' + i;
+    const tagsHtml = t.tags.map(tag => `<span class="task-tag ${tag}">${tag}</span>`).join('');
+    div.innerHTML = `
+      <input type="checkbox" class="task-cb" onchange="check('${wid}', ${i}, this)">
+      <div class="task-content">
+        <div class="task-title" id="ttitle-${wid}-${i}">${t.title}</div>
+        <div class="task-desc">${t.desc}</div>
+        <div class="task-tags">${tagsHtml}</div>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+});
+
+function check(wid, idx, el) {
+  state[wid][idx] = el.checked;
+  document.getElementById('item-' + wid + '-' + idx).classList.toggle('done', el.checked);
+  const done = state[wid].filter(Boolean).length;
+  const total = tasks[wid].length;
+  const pct = Math.round(done / total * 100);
+  document.getElementById('prog-' + wid).style.width = pct + '%';
+  document.getElementById('plabel-' + wid).textContent = done + ' / ' + total + ' concluídas';
+  updateOverall();
+}
+
+function updateOverall() {
+  let d = 0;
+  Object.keys(state).forEach(wid => { d += state[wid].filter(Boolean).length; });
+  const pct = Math.round(d / totalAll * 100);
+  document.getElementById('overall-fill').style.width = pct + '%';
+  document.getElementById('overall-pct').textContent = pct + '%';
+}
+
+function toggle(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('open');
+}
+
+function showMonth(id, btn) {
+  document.querySelectorAll('.month-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
